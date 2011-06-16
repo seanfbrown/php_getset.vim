@@ -500,20 +500,32 @@ if !exists("*s:ProcessVariable")
   function s:ProcessVariable(variable)
     let s:indent    = substitute(a:variable, s:variable, '\1', '') 
     let s:varname   = substitute(a:variable, s:variable, '\4', '') 
-    let s:funcname  = toupper(s:varname[0]) . strpart(s:varname, 1)
+    if s:varname[0] == '_'
+        let s:funcname  = toupper(s:varname[1]) . strpart(s:varname, 2)
+        let s:varnameclean = strpart(s:varname, 1) 
+    else
+        let s:funcname  = toupper(s:varname[0]) . strpart(s:varname, 1)
+        let s:varnameclean = s:varname 
+    endif
 
     " If any getter or setter already exists, then just return as there
     " is nothing to be done.  The assumption is that the user already
     " made his choice.
-    if s:AlreadyExists()
-      return
-    endif
+    "if s:AlreadyExists()
+    "  return
+    "endif
 
     if s:getter
+      if s:AlreadyExistsGetter()
+        return
+      endif
       call s:InsertGetter()
     endif
 
     if s:setter
+      if s:AlreadyExistsSetter()
+        return
+      endif
       call s:InsertSetter()
     endif
 
@@ -521,9 +533,14 @@ if !exists("*s:ProcessVariable")
 endif
 
 " Checks to see if any getter/setter exists.
-if !exists("*s:AlreadyExists")
-  function s:AlreadyExists()
-    return search('\(get\|set\)' . s:funcname . '\_s*([^)]*)\_s*{', 'w')
+if !exists("*s:AlreadyExistsSetter")
+  function s:AlreadyExistsSetter()
+    return search('\(set\)' . s:funcname . '\_s*([^)]*)\_s*{', 'w')
+  endfunction
+endif
+if !exists("*s:AlreadyExistsGetter")
+  function s:AlreadyExistsGetter()
+    return search('\(get\)' . s:funcname . '\_s*([^)]*)\_s*{', 'w')
   endfunction
 endif
 
@@ -536,6 +553,7 @@ if !exists("*s:InsertGetter")
 
 
     let method = substitute(method, '%varname%', s:varname, 'g')
+    let method = substitute(method, '%varnameclean%', s:varnameclean, 'g')
     let method = substitute(method, '%funcname%', 'get' . s:funcname, 'g')
 
     call s:InsertMethodBody(method)
@@ -551,6 +569,7 @@ if !exists("*s:InsertSetter")
     let method = s:phpgetset_setterTemplate
 
     let method = substitute(method, '%varname%', s:varname, 'g')
+    let method = substitute(method, '%varnameclean%', s:varnameclean, 'g')
     let method = substitute(method, '%funcname%', 'set' . s:funcname, 'g')
 
     call s:InsertMethodBody(method)
