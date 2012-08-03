@@ -252,7 +252,7 @@ set cpo&vim
 if exists("b:phpgetset_getterTemplate")
   let s:phpgetset_getterTemplate = b:phpgetset_getterTemplate
 else  
-  let b:phpgetset_getterTemplate =
+  let s:phpgetset_getterTemplate =
   \ "\n" .
   \ "   /**\n" .
   \ "    * @return %varnameclean%\n" .
@@ -268,7 +268,7 @@ endif
 if exists("b:phpgetset_setterTemplate")
   let s:phpgetset_setterTemplate = b:phpgetset_setterTemplate
 else
-  let b:phpgetset_setterTemplate =
+  let s:phpgetset_setterTemplate =
   \ "\n" .
   \ "   /**\n" .
   \ "    * @param $%varnameclean%\n" .
