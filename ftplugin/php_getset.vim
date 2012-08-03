@@ -252,35 +252,33 @@ set cpo&vim
 if exists("b:phpgetset_getterTemplate")
   let s:phpgetset_getterTemplate = b:phpgetset_getterTemplate
 else  
-  let s:phpgetset_getterTemplate = 
-    \ "\n" .
-    \ "/**\n" .
-    \ " * Get %varname%.\n" .
-    \ " *\n" .
-    \ " * @return %varname%.\n" .
-    \ " */\n" .
-    \ "function %funcname%()\n" .
-    \ "{\n" .
-    \ "    return $this->%varname%;\n" .
-    \ "}"
+  let b:phpgetset_getterTemplate =
+  \ "\n" .
+  \ "   /**\n" .
+  \ "    * @return %varnameclean%\n" .
+  \ "    */\n" .
+  \ "   public function %funcname%()\n" .
+  \ "   {\n" .
+  \ "       return $this->%varname%;\n" .
+  \ "   }"
 endif
 
 
 " Setter Templates
 if exists("b:phpgetset_setterTemplate")
   let s:phpgetset_setterTemplate = b:phpgetset_setterTemplate
-else  
-  let s:phpgetset_setterTemplate = 
+else
+  let b:phpgetset_setterTemplate =
   \ "\n" .
-  \ "/**\n" .
-  \ " * Set %varname%.\n" .
-  \ " *\n" .
-  \ " * @param %varname% the value to set.\n" . 
-  \ " */\n" .
-  \ "function %funcname%($%varname%)\n" .
-  \ "{\n" .
-  \ "    $this->%varname% = $%varname%;\n" .
-  \ "}"
+  \ "   /**\n" .
+  \ "    * @param $%varnameclean%\n" .
+  \ "    * @return self\n" .
+  \ "    */\n" .
+  \ "   public function %funcname%($%varnameclean%)\n" .
+  \ "   {\n" .
+  \ "       $this->%varname% = $%varnameclean%;\n" .
+  \ "       return $this;\n" .
+  \ "   }"
 endif
 
 
