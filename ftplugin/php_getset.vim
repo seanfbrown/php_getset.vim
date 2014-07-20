@@ -493,16 +493,35 @@ endif
 " indent    = '    '
 " varname   = 'name'
 " funcname  = 'Name'
+"
+" Additional example when using '_' delimiter.
 " 
+" indent    = '    '
+" varname   = 'first_name'
+" funcname  = 'FirstName'
+"
 if !exists("*s:ProcessVariable")
+  function s:GetFunctionName(varname)
+    if s:varname =~ "_"
+        let s:namearray = split(s:varname, "_")
+        let s:funcname = ''
+        for word in s:namearray
+            let s:funcname = s:funcname . toupper(word[0]) . strpart(word, 1)
+        endfor
+    else
+        let s:funcname = toupper(s:varname[0]) . strpart(s:varname, 1)
+    endif
+    return s:funcname
+  endfunction
+
   function s:ProcessVariable(variable)
     let s:indent    = substitute(a:variable, s:variable, '\1', '') 
     let s:varname   = substitute(a:variable, s:variable, '\4', '') 
     if s:varname[0] == '_'
-        let s:funcname  = toupper(s:varname[1]) . strpart(s:varname, 2)
+        let s:funcname  = s:GetFunctionName(strpart(s:varname, 1))
         let s:varnameclean = strpart(s:varname, 1) 
     else
-        let s:funcname  = toupper(s:varname[0]) . strpart(s:varname, 1)
+        let s:funcname  = s:GetFunctionName(s:varname)
         let s:varnameclean = s:varname 
     endif
 
